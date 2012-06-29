@@ -62,4 +62,23 @@ class AssertionTest extends TestCase
             $self->expect(0)->to->be->ok();
         })->to->throwException('Esperance\Error');
     }
+
+    /**
+     * @test
+     */
+    public function within_should_be_ok_if_subject_is_within_arguments()
+    {
+        $this->expect(3)->to->be->within(2, 4);
+    }
+
+    /**
+     * @test
+     */
+    public function within_should_be_error_if_subject_is_not_within_arguments()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(5)->to->be->within(2, 4);
+        })->to->throwException('Esperance\Error');
+    }
 }

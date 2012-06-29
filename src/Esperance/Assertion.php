@@ -122,6 +122,11 @@ class Assertion implements \ArrayAccess
         return $this;
     }
 
+    public function equal($obj)
+    {
+        return $this->be($obj);
+    }
+
     public function ok()
     {
         $this->assert(
@@ -133,11 +138,30 @@ class Assertion implements \ArrayAccess
 
     public function throwException($klass)
     {
+        $this->expect($this->subject)->to->be->callable();
+
+        $thrown = false;
         try {
             call_user_func($this->subject);
         } catch (\Exception $e) {
             $this->expect(get_class($e))->to->be($klass);
+            $thrown = true;
         }
+
+        $this->assert(
+            $thrown,
+            'expected function to throw an exception',
+            'expected function not to throw an exception'
+        );
+    }
+
+    public function callable()
+    {
+        $this->assert(
+            \is_callable($this->subject),
+            "expected {$this->i($this->subject)} to be callable",
+            "expected {$this->i($this->subject)} to not be callable"
+        );
     }
 
     private function expect($subject)
@@ -148,5 +172,15 @@ class Assertion implements \ArrayAccess
     private function i($obj)
     {
         return var_export($obj, true);
+    }
+
+    public function within($start, $finish)
+    {
+        $range = "{$start}..{$finish}";
+        $this->assert(
+            $this->subject >= $start && $this->subject <= $finish,
+            "expected {$this->i($this->subject)} to be within {$range}",
+            "expected {$this->i($this->subject)} to not be within {$range}"
+        );
     }
 }
