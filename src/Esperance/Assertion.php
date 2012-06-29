@@ -77,11 +77,11 @@ class Assertion implements \ArrayAccess
 
     public function assert($truth, $message, $error)
     {
-        $message = $this->flags['not'] ? $error : $message;
-        $ok = $this->flags['not'] ? !$truth : $truth;
+        $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
+        $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
 
         if (!$ok) {
-            throw new Error;
+            throw new Error($message);
         }
 
         $this->setAssertion('and', new Assertion($this->obj));
