@@ -11,15 +11,20 @@ class Assertion implements \ArrayAccess
         'be'   => array('an'),
     );
 
-    private $obj;
+    /**
+     * Subject for assertion.
+     *
+     * @var mixed
+     */
+    private $subject;
 
     private $flags;
 
     private $assertions;
 
-    public function __construct($obj, $flag = NULL, $parent = NULL)
+    public function __construct($subject, $flag = NULL, $parent = NULL)
     {
-        $this->obj = $obj;
+        $this->subject = $subject;
         $this->flags = array();
         $this->assertions = array();
 
@@ -40,7 +45,7 @@ class Assertion implements \ArrayAccess
                     continue;
                 }
                 $name = $_flags[$i];
-                $assertion = new Assertion($this->obj, $name, $this);
+                $assertion = new Assertion($this->subject, $name, $this);
                 $this->setAssertion($name, $assertion);
             }
         }
@@ -84,7 +89,7 @@ class Assertion implements \ArrayAccess
             throw new Error($message);
         }
 
-        $this->setAssertion('and', new Assertion($this->obj));
+        $this->setAssertion('and', new Assertion($this->subject));
     }
 
     public function setAssertion($i, $assertion)
@@ -110,9 +115,9 @@ class Assertion implements \ArrayAccess
     public function be($obj)
     {
         $this->assert(
-            $obj === $this->obj,
-            "expected {$this->i($this->obj)} to equal {$this->i($obj)}",
-            "expected {$this->i($this->obj)} to not equal {$this->i($obj)}"
+            $obj === $this->subject,
+            "expected {$this->i($this->subject)} to equal {$this->i($obj)}",
+            "expected {$this->i($this->subject)} to not equal {$this->i($obj)}"
         );
         return $this;
     }
@@ -120,9 +125,9 @@ class Assertion implements \ArrayAccess
     public function ok()
     {
         $this->assert(
-            !!$this->obj,
-            "expected {$this->i($this->obj)} to be truthy",
-            "expected {$this->i($this->obj)} to be falsy"
+            !!$this->subject,
+            "expected {$this->i($this->subject)} to be truthy",
+            "expected {$this->i($this->subject)} to be falsy"
         );
     }
 
