@@ -131,6 +131,20 @@ class Assertion implements \ArrayAccess
         );
     }
 
+    public function throwException($klass)
+    {
+        try {
+            call_user_func($this->subject);
+        } catch (\Exception $e) {
+            $this->expect(get_class($e))->to->be($klass);
+        }
+    }
+
+    private function expect($subject)
+    {
+        return new self($subject);
+    }
+
     private function i($obj)
     {
         return var_export($obj, true);
