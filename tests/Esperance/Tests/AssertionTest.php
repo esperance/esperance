@@ -39,4 +39,21 @@ class AssertionTest extends TestCase
     {
         $this->expect(1)->to->not->be(1);
     }
+
+    /**
+     * @test
+     */
+    public function ok_should_be_ok_if_subject_is_truthy()
+    {
+        $this->expect(1)->to->be->ok();
+    }
+
+    /**
+     * @test
+     * @expectedException \Esperance\Error
+     */
+    public function ok_should_be_error_if_subject_is_falsy()
+    {
+        $this->expect(0)->to->be->ok();
+    }
 }

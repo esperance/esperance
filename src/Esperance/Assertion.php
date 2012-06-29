@@ -111,9 +111,23 @@ class Assertion implements \ArrayAccess
     {
         $this->assert(
             $obj === $this->obj,
-            'expected ' . var_export($this->obj, true) . ' to equal ' . var_export($obj, true),
-            'expected ' . var_export($this->obj, true) . ' to not equal ' . var_export($obj, true)
+            "expected {$this->i($this->obj)} to equal {$this->i($obj)}",
+            "expected {$this->i($this->obj)} to not equal {$this->i($obj)}"
         );
         return $this;
+    }
+
+    public function ok()
+    {
+        $this->assert(
+            !!$this->obj,
+            "expected {$this->i($this->obj)} to be truthy",
+            "expected {$this->i($this->obj)} to be falsy"
+        );
+    }
+
+    private function i($obj)
+    {
+        return var_export($obj, true);
     }
 }
