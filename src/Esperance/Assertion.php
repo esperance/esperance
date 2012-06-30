@@ -12,6 +12,10 @@ class Assertion
 
     private $flags;
 
+    private $aliases = array(
+        'throw' => 'throwException',
+    );
+
     public function __construct($subject, $flag = NULL)
     {
         $this->subject = $subject;
@@ -22,6 +26,15 @@ class Assertion
     {
         $this->flags[$key] = true;
         return $this;
+    }
+
+    public function __call($method, $args)
+    {
+        if (array_key_exists($method, $this->aliases)) {
+            return call_user_func_array(array($this, $this->aliases[$method]), $args);
+        } else {
+            throw new \BadMethodCallException("Undefined method {$this->i($method)} is called");
+        }
     }
 
     public function assert($truth, $message, $error)
