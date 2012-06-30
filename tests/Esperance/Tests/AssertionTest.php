@@ -22,7 +22,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->be(2);
-        })->to->throwException('Esperance\Error', 'expected 1 to equal 2');
+        })->to->throw('Esperance\Error', 'expected 1 to equal 2');
     }
 
     /**
@@ -41,7 +41,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->not->be(1);
-        })->to->throwException('Esperance\Error', 'expected 1 to not equal 1');
+        })->to->throw('Esperance\Error', 'expected 1 to not equal 1');
     }
 
     /**
@@ -60,7 +60,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(0)->to->be->ok();
-        })->to->throwException('Esperance\Error', 'expected 0 to be truthy');
+        })->to->throw('Esperance\Error', 'expected 0 to be truthy');
     }
 
     /**
@@ -79,6 +79,6 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(5)->to->be->within(2, 4);
-        })->to->throwException('Esperance\Error', 'expected 5 to be within 2..4');
+        })->to->throw('Esperance\Error', 'expected 5 to be within 2..4');
     }
 }
