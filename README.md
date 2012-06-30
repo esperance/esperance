@@ -30,7 +30,7 @@ class YourTestCase extends \Esperance\PHPUnit\TestCase
 
 ### Intagration to the other testing framework
 
-Just define expect method or function to construt Esperance\\Assertion object.
+Just define `expect` method or function to construt Esperance\\Assertion object.
 
 Below is a very minimal testing script by hand.
 
