@@ -12,7 +12,7 @@ class Assertion
 
     private $flags;
 
-    public function __construct($subject, $flag = NULL, $parent = NULL)
+    public function __construct($subject, $flag = NULL)
     {
         $this->subject = $subject;
         $this->flags = array();
