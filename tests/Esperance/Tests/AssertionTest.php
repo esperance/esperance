@@ -66,6 +66,49 @@ class AssertionTest extends TestCase
     /**
      * @test
      */
+    public function throw_should_be_ok_if_expected_exception_is_thrown()
+    {
+        $this->expect(function () {
+            throw new \RuntimeException;
+        })->to->throw('RuntimeException');
+    }
+
+    /**
+     * @test
+     */
+    public function throw_should_be_ok_if_expected_exception_with_message_is_thrown()
+    {
+        $this->expect(function () {
+            throw new \RuntimeException('expected exception message');
+        })->to->throw('RuntimeException', 'expected exception message');
+    }
+
+    /**
+     * @test
+     */
+    public function throw_should_be_error_if_expected_exception_is_not_thrown()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(function () {
+                // Do nothing.
+            })->to->throw('RuntimeException');
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function throw_should_be_error_if_exception_not_expected_is_thrown()
+    {
+        $this->expect(function () {
+            throw new \LogicException;
+        })->to->throw('RuntimeException');
+    }
+
+    /**
+     * @test
+     */
     public function ok_should_be_ok_if_subject_is_truthy()
     {
         $this->expect(1)->to->be->ok();

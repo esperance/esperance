@@ -100,7 +100,6 @@ class Assertion
         try {
             call_user_func($this->subject);
         } catch (\Exception $e) {
-            $this->expect(get_class($e))->to->be($klass);
             $thrown = true;
             $message = $e->getMessage();
         }
