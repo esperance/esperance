@@ -89,4 +89,14 @@ class AssertionTest extends TestCase
     {
         $this->expect(1)->not->to->be(2)->and->to->be(1);
     }
+
+    /**
+     * @test
+     */
+    public function and_should_create_another_Assertion_object()
+    {
+        $a = $this->expect(1);
+        $b = $a->to->be(1)->and;
+        $this->expect($b)->to->not->be($a);
+    }
 }
