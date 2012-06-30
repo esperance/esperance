@@ -70,7 +70,7 @@ class Assertion
 
     public function throwException($klass)
     {
-        $this->expect($this->subject)->to->be->callable();
+        $this->expect($this->subject)->to->be->invokable();
 
         $thrown = false;
         try {
@@ -87,12 +87,12 @@ class Assertion
         );
     }
 
-    public function callable()
+    public function invokable()
     {
         $this->assert(
             \is_callable($this->subject),
-            "expected {$this->i($this->subject)} to be callable",
-            "expected {$this->i($this->subject)} to not be callable"
+            "expected {$this->i($this->subject)} to be invokable",
+            "expected {$this->i($this->subject)} to not be invokable"
         );
     }
 
