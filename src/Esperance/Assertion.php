@@ -26,8 +26,12 @@ class Assertion
 
     public function __get($key)
     {
-        $this->flags[$key] = true;
-        return $this;
+        if ($key === 'and') {
+            return $this->expect($this->subject);
+        } else {
+            $this->flags[$key] = true;
+            return $this;
+        }
     }
 
     public function __call($method, $args)

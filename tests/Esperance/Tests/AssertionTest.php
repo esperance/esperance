@@ -81,4 +81,12 @@ class AssertionTest extends TestCase
             $self->expect(5)->to->be->within(2, 4);
         })->to->throw('Esperance\Error', 'expected 5 to be within 2..4');
     }
+
+    /**
+     * @test
+     */
+    public function and_should_do_more_assertion()
+    {
+        $this->expect(1)->not->to->be(2)->and->to->be(1);
+    }
 }
