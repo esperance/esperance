@@ -68,7 +68,7 @@ class Assertion
         );
     }
 
-    public function throwException($klass)
+    public function throwException($klass, $expectedMessage = NULL)
     {
         $this->expect($this->subject)->to->be->invokable();
 
@@ -78,6 +78,7 @@ class Assertion
         } catch (\Exception $e) {
             $this->expect(get_class($e))->to->be($klass);
             $thrown = true;
+            $message = $e->getMessage();
         }
 
         $this->assert(
@@ -85,6 +86,13 @@ class Assertion
             'expected function to throw an exception',
             'expected function not to throw an exception'
         );
+        if ($thrown && $expectedMessage) {
+            $this->assert(
+                $message === $expectedMessage,
+                "expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}",
+                "THIS MESSAGE SHOULD NOT BE SHOWN"
+            );
+        }
     }
 
     public function invokable()
