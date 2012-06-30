@@ -28,6 +28,25 @@ class AssertionTest extends TestCase
     /**
      * @test
      */
+    public function eql_should_be_ok_if_subject_is_loosely_equal_to_object()
+    {
+        $this->expect("1")->to->eql(1);
+    }
+
+    /**
+     * @test
+     */
+    public function eql_should_be_error_if_subject_is_not_equal_to_object()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->eql(2);
+        })->to->throw('Esperance\Error', 'expected 1 to sort of equal 2');
+    }
+
+    /**
+     * @test
+     */
     public function not_be_should_be_ok_if_subject_is_not_equal_to_object()
     {
         $this->expect(1)->to->not->be(2);

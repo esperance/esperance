@@ -13,6 +13,7 @@ class Assertion
     private $flags;
 
     private $aliases = array(
+        'equal'      => 'be',
         'throw'      => 'throwException',
         'throwError' => 'throwException',
         'callable'   => 'invokable',
@@ -73,9 +74,13 @@ class Assertion
         return $this;
     }
 
-    public function equal($obj)
+    public function eql($obj)
     {
-        return $this->be($obj);
+        return $this->assert(
+            $this->subject == $obj,
+            "expected {$this->i($this->subject)} to sort of equal {$this->i($obj)}",
+            "expected {$this->i($this->subject)} to sort of not equal {$this->i($obj)}"
+        );
     }
 
     public function ok()
