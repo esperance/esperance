@@ -13,7 +13,9 @@ class Assertion
     private $flags;
 
     private $aliases = array(
-        'throw' => 'throwException',
+        'throw'      => 'throwException',
+        'throwError' => 'throwException',
+        'callable'   => 'invokable',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -83,7 +85,7 @@ class Assertion
 
     public function throwException($klass, $expectedMessage = NULL)
     {
-        $this->expect($this->subject)->to->be->invokable();
+        $this->expect($this->subject)->to->be->callable();
 
         $thrown = false;
         try {
@@ -112,8 +114,8 @@ class Assertion
     {
         $this->assert(
             \is_callable($this->subject),
-            "expected {$this->i($this->subject)} to be invokable",
-            "expected {$this->i($this->subject)} to not be invokable"
+            "expected {$this->i($this->subject)} to be callable",
+            "expected {$this->i($this->subject)} to not be callable"
         );
     }
 
