@@ -1,16 +1,15 @@
 <?php
+/**
+ * Esperance
+ *
+ * BDD style assertion library for PHP
+ *
+ * @author Yuya Takeyama
+ */
 namespace Esperance;
 
-class Assertion implements \ArrayAccess
+class Assertion
 {
-    private static $defaultFlags = array(
-        'not'  => array('to', 'be', 'have', 'include', 'only'),
-        'to'   => array('be', 'have', 'include', 'only', 'not'),
-        'only' => array('have'),
-        'have' => array('own'),
-        'be'   => array('an'),
-    );
-
     /**
      * Subject for assertion.
      *
@@ -20,91 +19,52 @@ class Assertion implements \ArrayAccess
 
     private $flags;
 
-    private $assertions;
+    private $aliases = array(
+        'equal'      => 'be',
+        'throw'      => 'throwException',
+        'throwError' => 'throwException',
+        'callable'   => 'invokable',
+        'an'         => 'a',
+    );
 
-    public function __construct($subject, $flag = NULL, $parent = NULL)
+    public function __construct($subject, $flag = NULL)
     {
         $this->subject = $subject;
         $this->flags = array();
-        $this->assertions = array();
-
-        if ($parent) {
-            $this->flags[$flag] = true;
-
-            foreach ($parent->getFlags() as $i => $_) {
-                $this->flags[$i] = true;
-            }
-        }
-
-        $_flags = $flag ? $this[$flag] : array_keys(self::$defaultFlags);
-        $self   = $this;
-
-        if ($_flags && is_array($_flags) && !is_callable($_flags)) {
-            for ($i = 0, $l = count($_flags); $i < $l; $i++) {
-                if ($this->hasFlag($_flags[$i])) {
-                    continue;
-                }
-                $name = $_flags[$i];
-                $assertion = new Assertion($this->subject, $name, $this);
-                $this->setAssertion($name, $assertion);
-            }
-        }
     }
 
     public function __get($key)
     {
-        return $this->assertions[$key];
-    }
-
-    public function offsetSet($key, $value)
-    {
-        $this->assertions[$key] = $value;
-    }
-
-    public function offsetGet($key)
-    {
-        if (method_exists($this, $key)) {
-            return array($this, $key);
-        } else if (isset(self::$defaultFlags[$key])) {
-            return self::$defaultFlags[$key];
+        if ($key === 'and') {
+            return $this->expect($this->subject);
+        } else {
+            $this->flags[$key] = true;
+            return $this;
         }
     }
 
-    public function offsetExists($key)
+    public function __call($method, $args)
     {
-        return isset($this->assertions[$key]);
-    }
-
-    public function offsetUnset($key)
-    {
-        unset($this->assertions[$key]);
+        if (array_key_exists($method, $this->aliases)) {
+            return call_user_func_array(array($this, $this->aliases[$method]), $args);
+        } else {
+            throw new \BadMethodCallException("Undefined method {$this->i($method)} is called");
+        }
     }
 
     public function assert($truth, $message, $error)
     {
-        $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
-        $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
+        $message = $this->hasFlag('not') ? $error : $message;
+        $ok = $this->hasFlag('not') ? !$truth : $truth;
 
         if (!$ok) {
             throw new Error($message);
         }
-
-        $this->setAssertion('and', new Assertion($this->subject));
-    }
-
-    public function setAssertion($i, $assertion)
-    {
-        $this->assertions[$i] = $assertion;
-    }
-
-    public function getFlags()
-    {
-        return $this->flags;
     }
 
     public function hasFlag($key)
     {
-        return array_key_exists($key, $this->flags);
+        return array_key_exists($key, $this->flags) && $this->flags[$key];
     }
 
     public function an()
@@ -122,9 +82,13 @@ class Assertion implements \ArrayAccess
         return $this;
     }
 
-    public function equal($obj)
+    public function eql($obj)
     {
-        return $this->be($obj);
+        return $this->assert(
+            $this->subject == $obj,
+            "expected {$this->i($this->subject)} to sort of equal {$this->i($obj)}",
+            "expected {$this->i($this->subject)} to sort of not equal {$this->i($obj)}"
+        );
     }
 
     public function ok()
@@ -136,7 +100,7 @@ class Assertion implements \ArrayAccess
         );
     }
 
-    public function throwException($klass)
+    public function throwException($klass, $expectedMessage = NULL)
     {
         $this->expect($this->subject)->to->be->callable();
 
@@ -144,8 +108,8 @@ class Assertion implements \ArrayAccess
         try {
             call_user_func($this->subject);
         } catch (\Exception $e) {
-            $this->expect(get_class($e))->to->be($klass);
             $thrown = true;
+            $message = $e->getMessage();
         }
 
         $this->assert(
@@ -153,15 +117,43 @@ class Assertion implements \ArrayAccess
             'expected function to throw an exception',
             'expected function not to throw an exception'
         );
+        if ($thrown && $expectedMessage) {
+            $this->assert(
+                $message === $expectedMessage,
+                "expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}",
+                "THIS MESSAGE SHOULD NOT BE SHOWN"
+            );
+        }
     }
 
-    public function callable()
+    public function invokable()
     {
         $this->assert(
             \is_callable($this->subject),
             "expected {$this->i($this->subject)} to be callable",
             "expected {$this->i($this->subject)} to not be callable"
         );
+    }
+
+    public function a($type)
+    {
+        if (\is_string($type)) {
+            $article = preg_match('/^[aeiou]/i', $type) ? 'an' : 'a';
+
+            $this->assert(
+                \is_a($this->subject, $type),
+                "expected {$this->i($this->subject)} to be {$article} {$type}",
+                "expected {$this->i($this->subject)} not to be {$article} {$type}"
+            );
+        } else {
+            $type = get_class($type);
+            $this->assert(
+                \is_a($this->subject, $type),
+                "expected {$this->i($this->subject)} to be an instance of {$type}",
+                "expected {$this->i($this->subject)} not to be an instance of {$type}"
+            );
+        }
+        return $this;
     }
 
     private function expect($subject)
