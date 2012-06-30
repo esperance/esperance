@@ -17,6 +17,7 @@ class Assertion
         'throw'      => 'throwException',
         'throwError' => 'throwException',
         'callable'   => 'invokable',
+        'an'         => 'a',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -125,6 +126,27 @@ class Assertion
             "expected {$this->i($this->subject)} to be callable",
             "expected {$this->i($this->subject)} to not be callable"
         );
+    }
+
+    public function a($type)
+    {
+        if (\is_string($type)) {
+            $article = preg_match('/^[aeiou]/i', $type) ? 'an' : 'a';
+
+            $this->assert(
+                \is_a($this->subject, $type),
+                "expected {$this->i($this->subject)} to be {$article} {$type}",
+                "expected {$this->i($this->subject)} not to be {$article} {$type}"
+            );
+        } else {
+            $type = get_class($type);
+            $this->assert(
+                \is_a($this->subject, $type),
+                "expected {$this->i($this->subject)} to be an instance of {$type}",
+                "expected {$this->i($this->subject)} not to be an instance of {$type}"
+            );
+        }
+        return $this;
     }
 
     private function expect($subject)

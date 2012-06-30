@@ -161,4 +161,50 @@ class AssertionTest extends TestCase
         $b = $a->to->be(1)->and;
         $this->expect($b)->to->not->be($a);
     }
+
+    /**
+     * @test
+     */
+    public function a_should_be_ok_if_the_subject_is_expected_type()
+    {
+        $this->expect(new \SplObjectStorage)->to->be->a('SplObjectStorage');
+    }
+
+    /**
+     * @test
+     */
+    public function a_should_be_ok_it_the_subject_is_an_instance_of_object()
+    {
+        $this->expect(new \SplObjectStorage)->to->be->a(new \SplObjectStorage);
+    }
+
+    /**
+     * @test
+     */
+    public function a_should_be_ok_if_the_subject_is_subclass_of_expected_type()
+    {
+        $this->expect(new \SplObjectStorage)->to->be->a('Traversable');
+    }
+
+    /**
+     * @test
+     */
+    public function a_should_be_error_if_the_subject_is_not_expected_type()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(new \SplObjectStorage)->to->be->a('ArrayObject');
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function a_should_be_error_if_the_subject_is_not_an_intance_of_object()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(new \SplObjectStorage)->to->be->a(new \ArrayObject);
+        })->to->throw('Esperance\Error');
+    }
 }
