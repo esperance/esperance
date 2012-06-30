@@ -1,4 +1,11 @@
 <?php
+/**
+ * Esperance
+ *
+ * BDD style assertion library for PHP
+ *
+ * @author Yuya Takeyama
+ */
 namespace Esperance;
 
 class Assertion

@@ -1,7 +1,9 @@
 Esp&eacute;rance
 ================
 
-An assertion library heavily inspired by [expect.js](https://github.com/LearnBoost/expect.js)
+BDD style assertion library for PHP.
+
+Heavily inspired by [expect.js](https://github.com/LearnBoost/expect.js).
 
 Usage
 -----
