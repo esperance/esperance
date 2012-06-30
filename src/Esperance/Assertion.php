@@ -12,6 +12,12 @@ class Assertion
 
     private $flags;
 
+    private $aliases = array(
+        'throw'      => 'throwException',
+        'throwError' => 'throwException',
+        'callable'   => 'invokable',
+    );
+
     public function __construct($subject, $flag = NULL)
     {
         $this->subject = $subject;
@@ -20,8 +26,21 @@ class Assertion
 
     public function __get($key)
     {
-        $this->flags[$key] = true;
-        return $this;
+        if ($key === 'and') {
+            return $this->expect($this->subject);
+        } else {
+            $this->flags[$key] = true;
+            return $this;
+        }
+    }
+
+    public function __call($method, $args)
+    {
+        if (array_key_exists($method, $this->aliases)) {
+            return call_user_func_array(array($this, $this->aliases[$method]), $args);
+        } else {
+            throw new \BadMethodCallException("Undefined method {$this->i($method)} is called");
+        }
     }
 
     public function assert($truth, $message, $error)
@@ -70,7 +89,7 @@ class Assertion
 
     public function throwException($klass, $expectedMessage = NULL)
     {
-        $this->expect($this->subject)->to->be->invokable();
+        $this->expect($this->subject)->to->be->callable();
 
         $thrown = false;
         try {
@@ -99,8 +118,8 @@ class Assertion
     {
         $this->assert(
             \is_callable($this->subject),
-            "expected {$this->i($this->subject)} to be invokable",
-            "expected {$this->i($this->subject)} to not be invokable"
+            "expected {$this->i($this->subject)} to be callable",
+            "expected {$this->i($this->subject)} to not be callable"
         );
     }
 
