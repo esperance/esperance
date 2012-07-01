@@ -20,11 +20,14 @@ class Assertion
     private $flags;
 
     private $aliases = array(
-        'equal'      => 'be',
-        'throw'      => 'throwException',
-        'throwError' => 'throwException',
-        'callable'   => 'invokable',
-        'an'         => 'a',
+        'equal'       => 'be',
+        'throw'       => 'throwException',
+        'throwError'  => 'throwException',
+        'callable'    => 'invokable',
+        'an'          => 'a',
+        'empty'       => '_empty',
+        'greaterThan' => 'above',
+        'lessThan'    => 'below',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -54,22 +57,12 @@ class Assertion
 
     public function assert($truth, $message, $error)
     {
-        $message = $this->hasFlag('not') ? $error : $message;
-        $ok = $this->hasFlag('not') ? !$truth : $truth;
+        $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
+        $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
 
         if (!$ok) {
             throw new Error($message);
         }
-    }
-
-    public function hasFlag($key)
-    {
-        return array_key_exists($key, $this->flags) && $this->flags[$key];
-    }
-
-    public function an()
-    {
-        return $this;
     }
 
     public function be($obj)
@@ -117,12 +110,8 @@ class Assertion
             'expected function to throw an exception',
             'expected function not to throw an exception'
         );
-        if ($thrown && $expectedMessage) {
-            $this->assert(
-                $message === $expectedMessage,
-                "expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}",
-                "THIS MESSAGE SHOULD NOT BE SHOWN"
-            );
+        if ($thrown && $expectedMessage && $message !== $expectedMessage) {
+            throw new Error("expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}");
         }
     }
 
@@ -156,14 +145,14 @@ class Assertion
         return $this;
     }
 
-    private function expect($subject)
+    public function _empty()
     {
-        return new self($subject);
-    }
-
-    private function i($obj)
-    {
-        return var_export($obj, true);
+        $this->assert(
+            empty($this->subject),
+            "expected {$this->i($this->subject)} to be empty",
+            "expected {$this->i($this->subject)} to not be empty"
+        );
+        return $this;
     }
 
     public function within($start, $finish)
@@ -174,5 +163,62 @@ class Assertion
             "expected {$this->i($this->subject)} to be within {$range}",
             "expected {$this->i($this->subject)} to not be within {$range}"
         );
+    }
+
+    public function above($n)
+    {
+        $this->assert(
+            $this->subject > $n,
+            "expected {$this->i($this->subject)} to be above {$this->i($n)}",
+            "expected {$this->i($this->subject)} to be below {$this->i($n)}"
+        );
+        return $this;
+    }
+
+    public function below($n)
+    {
+        $this->assert(
+            $this->subject < $n,
+            "expected {$this->i($this->subject)} to be below {$this->i($n)}",
+            "expected {$this->i($this->subject)} to be above {$this->i($n)}"
+        );
+        return $this;
+    }
+
+    public function match($regexp)
+    {
+        $this->assert(
+            preg_match($regexp, $this->subject),
+            "expected {$this->i($this->subject)} to match {$regexp}",
+            "expected {$this->i($this->subject)} not to match {$regexp}"
+        );
+        return $this;
+    }
+
+    public function length($n)
+    {
+        if (is_array($this->subject) || (is_object($this->subject) && $this->subject instanceof \Countable)) {
+            $len = count($this->subject);
+        } else if (is_string($this->subject)) {
+            $len = strlen($this->subject);
+        } else {
+            throw new \InvalidArgumentException('Expected subject for length() is array, string or Countable.');
+        }
+        $this->assert(
+            $len === $n,
+            "expected {$this->i($this->subject)} to have a length of {$this->i($n)} but got {$len}",
+            "expected {$this->i($this->subject)} to not have a length of {$len}"
+        );
+        return $this;
+    }
+
+    private function expect($subject)
+    {
+        return new self($subject);
+    }
+
+    private function i($obj)
+    {
+        return var_export($obj, true);
     }
 }

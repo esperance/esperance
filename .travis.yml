@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.2
   - 5.3
   - 5.4
 
@@ -9,3 +8,7 @@ branches:
   only:
     - master
     - develop
+
+before_script: sh install-composer.sh
+
+script: phpunit --coverage-text

@@ -1,0 +1,12 @@
+{
+    "name": "esperance/esperance",
+    "description": "BDD style assertion library for PHP.",
+    "keywords": ["bdd", "tdd", "assertion"],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": { "Esperance": "src" }
+    }
+}

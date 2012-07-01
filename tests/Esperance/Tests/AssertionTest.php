@@ -193,7 +193,7 @@ class AssertionTest extends TestCase
     {
         $self = $this;
         $this->expect(function () use ($self) {
-            $self->expect(new \SplObjectStorage)->to->be->a('ArrayObject');
+            $self->expect(new \SplObjectStorage)->to->be->an('ArrayObject');
         })->to->throw('Esperance\Error');
     }
 
@@ -204,7 +204,189 @@ class AssertionTest extends TestCase
     {
         $self = $this;
         $this->expect(function () use ($self) {
-            $self->expect(new \SplObjectStorage)->to->be->a(new \ArrayObject);
+            $self->expect(new \SplObjectStorage)->to->be->an(new \ArrayObject);
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_empty_array()
+    {
+        $this->expect(array())->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_NULL()
+    {
+        $this->expect(NULL)->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_empty_string()
+    {
+        $this->expect('')->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_error_if_the_subject_array_has_an_element()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(array(1))->to->be->empty();
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_error_if_the_subject_string_has_a_character()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect('a')->to->be->empty();
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function above_should_be_ok_if_the_subject_is_greater_than_argument()
+    {
+        $this->expect(1)->to->be->above(0);
+    }
+
+    /**
+     * @test
+     */
+    public function above_should_be_error_if_the_subject_is_equal_to_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->above(1);
+        })->to->throw('Esperance\Error', 'expected 1 to be above 1');
+    }
+
+    /**
+     * @test
+     */
+    public function above_should_be_error_if_the_subject_is_less_than_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->above(2);
+        })->to->throw('Esperance\Error', 'expected 1 to be above 2');
+    }
+
+    /**
+     * @test
+     */
+    public function below_should_be_ok_if_the_subject_is_less_than_argument()
+    {
+        $this->expect(1)->to->be->below(2);
+    }
+
+    /**
+     * @test
+     */
+    public function below_should_be_error_if_the_subject_is_equal_to_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->below(1);
+        })->to->throw('Esperance\Error', 'expected 1 to be below 1');
+    }
+
+    /**
+     * @test
+     */
+    public function below_should_be_error_if_the_subject_is_greater_than_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->below(0);
+        })->to->throw('Esperance\Error', 'expected 1 to be below 0');
+    }
+
+    /**
+     * @test
+     */
+    public function match_should_be_ok_if_the_subject_matches_regexp()
+    {
+        $this->expect("abc")->to->match('/^a/');
+    }
+
+    /**
+     * @test
+     */
+    public function match_should_be_ok_if_the_subject_does_not_match_regexp()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect("abc")->to->match('/^b/');
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_elements_is_equal()
+    {
+        $this->expect(array(1))->to->have->length(1);
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_elements_is_not_equal()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(array(1))->to->have->length(2);
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_length_of_string_is_equal()
+    {
+        $this->expect('abc')->to->have->length(3);
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_error_if_the_length_of_string_is_not_equal()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect('abc')->to->have->length(1);
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_Countable_elements_is_equal()
+    {
+        $this->expect(new \ArrayObject(array(1)))->to->have->length(1);
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_Countable_elements_is_not_equal()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(new \ArrayObject(array(1)))->to->have->length(2);
         })->to->throw('Esperance\Error');
     }
 }
