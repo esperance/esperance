@@ -101,9 +101,12 @@ class AssertionTest extends TestCase
      */
     public function throw_should_be_error_if_exception_not_expected_is_thrown()
     {
-        $this->expect(function () {
-            throw new \LogicException;
-        })->to->throw('RuntimeException');
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(function () {
+                throw new \LogicException;
+            })->to->throw('RuntimeException');
+        })->to->throw('Esperance\Error');
     }
 
     /**

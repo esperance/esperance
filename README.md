@@ -8,34 +8,37 @@ Heavily inspired by [expect.js](https://github.com/LearnBoost/expect.js).
 Usage
 -----
 
-### PHPUnit integration
+### Installation
 
-Esperance\\PHPUnit\\TestCase class is available.
+Esp&eacute;rance can be installed using [Composer](http://getcomposer.org/).
 
-```php
-<?php
-class YourTestCase extends \Esperance\PHPUnit\TestCase
+At first, save below as `composer.json` at the root of your project.
+
+```
 {
-    public testSomething()
-    {
-        $this->expect(1 + 1)->to->be(2);
-        $this->expect("foo" . "bar")->to->be("foobar")->and->not->to->be('baz');
-        $this->expect(new ArrayObject)->to->be->an('ArrayObject');
-        $this->expect(function () {
-            throw new RuntimeException;
-        })->to->throw('RuntimeException');
+    "require": {
+        "esperance/esperance": "dev-master"
     }
 }
 ```
 
-### Intagration to the other testing framework
+And run these commands.
 
-Just define `expect` method or function to construt Esperance\\Assertion object.
+```
+$ wget http://getcomposer.org/composer.phar
+$ php composer.phar install
+```
 
-Below is a very minimal testing script by hand.
+Then Esp&eacute;rance would be installed in `./vendor` directory and also `./vendor/autoload.php` is generated.
+
+### Very minimal testing script by hand
+
+Just define your `expect` method or function to construt `Esperance\Assertion` object.
 
 ```php
 <?php
+require './vendor/autoload.php';
+
 function expect($obj) {
     return new \Esperance\Assertion($obj);
 }
