@@ -270,7 +270,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->be->above(1);
-        })->to->throw('Esperance\Error');
+        })->to->throw('Esperance\Error', 'expected 1 to be above 1');
     }
 
     /**
@@ -281,7 +281,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->be->above(2);
-        })->to->throw('Esperance\Error');
+        })->to->throw('Esperance\Error', 'expected 1 to be above 2');
     }
 
     /**
@@ -300,7 +300,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->be->below(1);
-        })->to->throw('Esperance\Error');
+        })->to->throw('Esperance\Error', 'expected 1 to be below 1');
     }
 
     /**
@@ -311,7 +311,7 @@ class AssertionTest extends TestCase
         $self = $this;
         $this->expect(function () use ($self) {
             $self->expect(1)->to->be->below(0);
-        })->to->throw('Esperance\Error');
+        })->to->throw('Esperance\Error', 'expected 1 to be below 0');
     }
 
 }
