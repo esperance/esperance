@@ -1,6 +1,11 @@
 ChangeLog of Esp&eacute;rance
 =============================
 
+0.0.3 released 2012-07-02
+-------------------------
+
+- Splitted package into `esperance/esperance` and `esperance/esperance-phpunit`
+
 0.0.2 released 2012-07-01
 -------------------------
 
