@@ -193,7 +193,7 @@ class AssertionTest extends TestCase
     {
         $self = $this;
         $this->expect(function () use ($self) {
-            $self->expect(new \SplObjectStorage)->to->be->a('ArrayObject');
+            $self->expect(new \SplObjectStorage)->to->be->an('ArrayObject');
         })->to->throw('Esperance\Error');
     }
 
@@ -204,7 +204,7 @@ class AssertionTest extends TestCase
     {
         $self = $this;
         $this->expect(function () use ($self) {
-            $self->expect(new \SplObjectStorage)->to->be->a(new \ArrayObject);
+            $self->expect(new \SplObjectStorage)->to->be->an(new \ArrayObject);
         })->to->throw('Esperance\Error');
     }
 }

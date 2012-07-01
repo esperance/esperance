@@ -67,11 +67,6 @@ class Assertion
         return array_key_exists($key, $this->flags) && $this->flags[$key];
     }
 
-    public function an()
-    {
-        return $this;
-    }
-
     public function be($obj)
     {
         $this->assert(
