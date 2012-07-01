@@ -199,12 +199,16 @@ class Assertion
     {
         if (is_array($this->subject)) {
             $len = count($this->subject);
-            $this->assert(
-                $len === $n,
-                "expected {$this->i($this->subject)} to have a length of {$this->i($n)} but got {$len}",
-                "expected {$this->i($this->subject)} to not have a length of {$len}"
-            );
+        } else if (is_string($this->subject)) {
+            $len = strlen($this->subject);
+        } else {
+            throw new \InvalidArgumentException('Expected subject for length() is array, string or Countable.');
         }
+        $this->assert(
+            $len === $n,
+            "expected {$this->i($this->subject)} to have a length of {$this->i($n)} but got {$len}",
+            "expected {$this->i($this->subject)} to not have a length of {$len}"
+        );
         return $this;
     }
 
