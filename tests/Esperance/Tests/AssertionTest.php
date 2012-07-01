@@ -332,4 +332,23 @@ class AssertionTest extends TestCase
             $self->expect("abc")->to->match('/^b/');
         })->to->throw('Esperance\Error');
     }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_elements_is_equal()
+    {
+        $this->expect(array(1))->to->have->length(1);
+    }
+
+    /**
+     * @test
+     */
+    public function length_should_be_ok_if_the_number_of_elements_is_not_equal()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(array(1))->to->have->length(2);
+        })->to->throw('Esperance\Error');
+    }
 }

@@ -195,6 +195,19 @@ class Assertion
         return $this;
     }
 
+    public function length($n)
+    {
+        if (is_array($this->subject)) {
+            $len = count($this->subject);
+            $this->assert(
+                $len === $n,
+                "expected {$this->subject} to have a length of {$this->i($n)} but got {$len}",
+                "expected {$this->subject} to not have a length of {$len}"
+            );
+        }
+        return $this;
+    }
+
     private function expect($subject)
     {
         return new self($subject);
