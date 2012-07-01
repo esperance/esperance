@@ -185,6 +185,16 @@ class Assertion
         return $this;
     }
 
+    public function match($regexp)
+    {
+        $this->assert(
+            preg_match($regexp, $this->subject),
+            "expected {$this->i($this->subject)} to match {$regexp}",
+            "expected {$this->i($this->subject)} not to match {$regexp}"
+        );
+        return $this;
+    }
+
     private function expect($subject)
     {
         return new self($subject);

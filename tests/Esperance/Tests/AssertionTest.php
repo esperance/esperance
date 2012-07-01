@@ -314,4 +314,22 @@ class AssertionTest extends TestCase
         })->to->throw('Esperance\Error', 'expected 1 to be below 0');
     }
 
+    /**
+     * @test
+     */
+    public function match_should_be_ok_if_the_subject_matches_regexp()
+    {
+        $this->expect("abc")->to->match('/^a/');
+    }
+
+    /**
+     * @test
+     */
+    public function match_should_be_ok_if_the_subject_does_not_match_regexp()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect("abc")->to->match('/^b/');
+        })->to->throw('Esperance\Error');
+    }
 }
