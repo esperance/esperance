@@ -117,12 +117,8 @@ class Assertion
             'expected function to throw an exception',
             'expected function not to throw an exception'
         );
-        if ($thrown && $expectedMessage) {
-            $this->assert(
-                $message === $expectedMessage,
-                "expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}",
-                "THIS MESSAGE SHOULD NOT BE SHOWN"
-            );
+        if ($thrown && $expectedMessage && $message !== $expectedMessage) {
+            throw new Error("expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}");
         }
     }
 
