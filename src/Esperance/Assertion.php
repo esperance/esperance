@@ -54,17 +54,12 @@ class Assertion
 
     public function assert($truth, $message, $error)
     {
-        $message = $this->hasFlag('not') ? $error : $message;
-        $ok = $this->hasFlag('not') ? !$truth : $truth;
+        $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
+        $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
 
         if (!$ok) {
             throw new Error($message);
         }
-    }
-
-    public function hasFlag($key)
-    {
-        return array_key_exists($key, $this->flags) && $this->flags[$key];
     }
 
     public function be($obj)
@@ -147,16 +142,6 @@ class Assertion
         return $this;
     }
 
-    private function expect($subject)
-    {
-        return new self($subject);
-    }
-
-    private function i($obj)
-    {
-        return var_export($obj, true);
-    }
-
     public function within($start, $finish)
     {
         $range = "{$start}..{$finish}";
@@ -165,5 +150,15 @@ class Assertion
             "expected {$this->i($this->subject)} to be within {$range}",
             "expected {$this->i($this->subject)} to not be within {$range}"
         );
+    }
+
+    private function expect($subject)
+    {
+        return new self($subject);
+    }
+
+    private function i($obj)
+    {
+        return var_export($obj, true);
     }
 }
