@@ -20,12 +20,13 @@ class Assertion
     private $flags;
 
     private $aliases = array(
-        'equal'      => 'be',
-        'throw'      => 'throwException',
-        'throwError' => 'throwException',
-        'callable'   => 'invokable',
-        'an'         => 'a',
-        'empty'      => '_empty',
+        'equal'       => 'be',
+        'throw'       => 'throwException',
+        'throwError'  => 'throwException',
+        'callable'    => 'invokable',
+        'an'          => 'a',
+        'empty'       => '_empty',
+        'greaterThan' => 'above',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -161,6 +162,16 @@ class Assertion
             "expected {$this->i($this->subject)} to be within {$range}",
             "expected {$this->i($this->subject)} to not be within {$range}"
         );
+    }
+
+    public function above($n)
+    {
+        $this->assert(
+            $this->subject > $n,
+            "expected {$this->i($this->subject)} to be above {$this->i($n)}",
+            "expected {$this->i($this->subject)} to be below {$this->i($n)}"
+        );
+        return $this;
     }
 
     private function expect($subject)
