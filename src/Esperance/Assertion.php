@@ -197,7 +197,7 @@ class Assertion
 
     public function length($n)
     {
-        if (is_array($this->subject)) {
+        if (is_array($this->subject) || (is_object($this->subject) && $this->subject instanceof \Countable)) {
             $len = count($this->subject);
         } else if (is_string($this->subject)) {
             $len = strlen($this->subject);
