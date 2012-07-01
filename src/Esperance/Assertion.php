@@ -214,7 +214,7 @@ class Assertion
 
     private function expect($subject)
     {
-        return new self($subject);
+        return new static($subject);
     }
 
     private function i($obj)
