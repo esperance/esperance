@@ -93,23 +93,38 @@ class Assertion
         );
     }
 
-    public function throwException($klass, $expectedMessage = NULL)
+    public function throwException($klass = NULL, $expectedMessage = NULL)
     {
         $this->expect($this->subject)->to->be->callable();
 
         $thrown = false;
+        $thrownKlass = NULL;
         try {
             call_user_func($this->subject);
         } catch (\Exception $e) {
-            $thrown = true;
+            if (is_null($klass)) {
+                $thrown = true;
+            } else if (is_string($klass) && \is_a($e, $klass)) {
+                $thrown = true;
+            }
+            $thrownKlass = get_class($e);
             $message = $e->getMessage();
         }
 
-        $this->assert(
-            $thrown,
-            'expected function to throw an exception',
-            'expected function not to throw an exception'
-        );
+        if (is_null($klass)) {
+            $this->assert(
+                $thrown,
+                'expected function to throw an exception',
+                'expected function not to throw an exception'
+            );
+        } else {
+            $this->assert(
+                $thrown,
+                "expected function to throw {$klass}" .
+                ($thrownKlass ? " but got {$thrownKlass}" : ''),
+                "expected function not to throw {$klass}"
+            );
+        }
         if ($thrown && $expectedMessage && $message !== $expectedMessage) {
             throw new Error("expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}");
         }
