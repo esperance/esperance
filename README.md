@@ -1,6 +1,9 @@
 Esp&eacute;rance
 ================
 
+master: [![Build Status](https://secure.travis-ci.org/esperance/esperance.png?branch=master)](http://travis-ci.org/esperance/esperance)
+develop: [![Build Status](https://secure.travis-ci.org/esperance/esperance.png?branch=develop)](http://travis-ci.org/esperance/esperance)
+
 BDD style assertion library for PHP.
 
 Heavily inspired by [expect.js](https://github.com/LearnBoost/expect.js).
@@ -47,6 +50,10 @@ expect(1)->to->be(1);
 
 echo "All tests passed.", PHP_EOL;
 ```
+
+### PHPUnit integrtion
+
+Use [esperance/esperance-phpunit](https://github.com/esperance/esperance-phpunit).
 
 License
 -------

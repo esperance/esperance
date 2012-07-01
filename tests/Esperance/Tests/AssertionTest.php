@@ -1,10 +1,9 @@
 <?php
 namespace Esperance\Tests;
 
-use \Esperance\PHPUnit\TestCase;
 use \Esperance\Assertion;
 
-class AssertionTest extends TestCase
+class AssertionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -391,5 +390,10 @@ class AssertionTest extends TestCase
         $this->expect(function () use ($self) {
             $self->expect(new \ArrayObject(array(1)))->to->have->length(2);
         })->to->throw('Esperance\Error');
+    }
+
+    public function expect($subject)
+    {
+        return new Assertion($subject);
     }
 }
