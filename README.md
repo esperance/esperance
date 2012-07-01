@@ -48,6 +48,10 @@ expect(1)->to->be(1);
 echo "All tests passed.", PHP_EOL;
 ```
 
+### PHPUnit integrtion
+
+Use [esperance/esperance-phpunit](https://github.com/esperance/esperance-phpunit).
+
 License
 -------
 
