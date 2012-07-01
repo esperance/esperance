@@ -207,4 +207,50 @@ class AssertionTest extends TestCase
             $self->expect(new \SplObjectStorage)->to->be->an(new \ArrayObject);
         })->to->throw('Esperance\Error');
     }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_empty_array()
+    {
+        $this->expect(array())->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_NULL()
+    {
+        $this->expect(NULL)->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_ok_if_the_subject_is_empty_string()
+    {
+        $this->expect('')->to->be->empty();
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_error_if_the_subject_array_has_an_element()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(array(1))->to->be->empty();
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function empty_should_be_error_if_the_subject_string_has_a_character()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect('a')->to->be->empty();
+        })->to->throw('Esperance\Error');
+    }
 }

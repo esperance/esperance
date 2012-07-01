@@ -25,6 +25,7 @@ class Assertion
         'throwError' => 'throwException',
         'callable'   => 'invokable',
         'an'         => 'a',
+        'empty'      => '_empty',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -139,6 +140,16 @@ class Assertion
                 "expected {$this->i($this->subject)} not to be an instance of {$type}"
             );
         }
+        return $this;
+    }
+
+    public function _empty()
+    {
+        $this->assert(
+            empty($this->subject),
+            "expected {$this->i($this->subject)} to be empty",
+            "expected {$this->i($this->subject)} to not be empty"
+        );
         return $this;
     }
 
