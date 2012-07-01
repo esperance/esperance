@@ -201,8 +201,8 @@ class Assertion
             $len = count($this->subject);
             $this->assert(
                 $len === $n,
-                "expected {$this->subject} to have a length of {$this->i($n)} but got {$len}",
-                "expected {$this->subject} to not have a length of {$len}"
+                "expected {$this->i($this->subject)} to have a length of {$this->i($n)} but got {$len}",
+                "expected {$this->i($this->subject)} to not have a length of {$len}"
             );
         }
         return $this;
