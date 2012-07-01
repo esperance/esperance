@@ -45,6 +45,11 @@ expect(1)->to->be(1);
 echo "All tests passed.", PHP_EOL;
 ```
 
+License
+-------
+
+The MIT License
+
 Author
 ------
 
