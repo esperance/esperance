@@ -95,8 +95,6 @@ class Assertion
 
     public function throwException($klass = NULL, $expectedMessage = NULL)
     {
-        $this->expect($this->subject)->to->be->callable();
-
         $thrown = false;
         $thrownKlass = NULL;
         try {
