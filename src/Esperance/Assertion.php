@@ -27,6 +27,7 @@ class Assertion
         'an'          => 'a',
         'empty'       => '_empty',
         'greaterThan' => 'above',
+        'lessThan'    => 'below',
     );
 
     public function __construct($subject, $flag = NULL)
@@ -170,6 +171,16 @@ class Assertion
             $this->subject > $n,
             "expected {$this->i($this->subject)} to be above {$this->i($n)}",
             "expected {$this->i($this->subject)} to be below {$this->i($n)}"
+        );
+        return $this;
+    }
+
+    public function below($n)
+    {
+        $this->assert(
+            $this->subject < $n,
+            "expected {$this->i($this->subject)} to be below {$this->i($n)}",
+            "expected {$this->i($this->subject)} to be above {$this->i($n)}"
         );
         return $this;
     }

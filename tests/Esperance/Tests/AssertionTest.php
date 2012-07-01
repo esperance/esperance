@@ -283,4 +283,35 @@ class AssertionTest extends TestCase
             $self->expect(1)->to->be->above(2);
         })->to->throw('Esperance\Error');
     }
+
+    /**
+     * @test
+     */
+    public function below_should_be_ok_if_the_subject_is_less_than_argument()
+    {
+        $this->expect(1)->to->be->below(2);
+    }
+
+    /**
+     * @test
+     */
+    public function below_should_be_error_if_the_subject_is_equal_to_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->below(1);
+        })->to->throw('Esperance\Error');
+    }
+
+    /**
+     * @test
+     */
+    public function below_should_be_error_if_the_subject_is_greater_than_argument()
+    {
+        $self = $this;
+        $this->expect(function () use ($self) {
+            $self->expect(1)->to->be->below(0);
+        })->to->throw('Esperance\Error');
+    }
+
 }
