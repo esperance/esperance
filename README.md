@@ -62,9 +62,9 @@ Extension using event dispatcher is available.
 
 ### Events
 
-- before_assertion (`\Esperance\Assertion->beforeAssertion($callback)`)
-- assertion_success (`\Esperance\Assertion->onAssertionSuccess($callback)`)
-- assertion_failure (`\Esperance\Assertion->onAssertionFailure($callback)`)
+- before_assertion `\Esperance\Assertion->beforeAssertion($callback)`
+- assertion_success `\Esperance\Assertion->onAssertionSuccess($callback)`
+- assertion_failure `\Esperance\Assertion->onAssertionFailure($callback)`
 
 ### Usage
 
