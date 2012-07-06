@@ -17,7 +17,7 @@ Esp&eacute;rance can be installed using [Composer](http://getcomposer.org/).
 
 At first, save below as `composer.json` at the root of your project.
 
-```
+```json
 {
     "require": {
         "esperance/esperance": "dev-master"
@@ -54,6 +54,45 @@ echo "All tests passed.", PHP_EOL;
 ### PHPUnit integrtion
 
 Use [esperance/esperance-phpunit](https://github.com/esperance/esperance-phpunit).
+
+Extension
+---------
+
+Extension using event dispatcher is available.
+
+### Events
+
+- before_assertion (`\Esperance\Assertion->beforeAssertion($callback)`)
+- assertion_success (`\Esperance\Assertion->onAssertionSuccess($callback)`)
+- assertion_failure (`\Esperance\Assertion->onAssertionFailure($callback)`)
+
+### Usage
+
+Assertion counter example.
+
+```php
+<?php
+require './vendor/autoload.php';
+
+$count = $success = $failure = 0;
+
+function expect($subject) {
+    global $count, $success, $failure;
+
+    $extension = new \Esperance\Extension;
+    $extension->beforeAssertion(function () use (&$count) {
+        $count++;
+    });
+
+    return new \Esperance\Assertion($subject, $extension);
+}
+
+expect(NULL)->to->be(NULL);
+expect(0)->to->be(0);
+expect(1)->to->be(1);
+
+echo "Count: {$count}", PHP_EOL; // => Count: 3
+```
 
 License
 -------
