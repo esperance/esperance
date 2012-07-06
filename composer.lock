@@ -1,5 +1,5 @@
 {
-    "hash": "a87ba7dff2f1c61ba0e4a6169864539e",
+    "hash": "a6b9af33ea93c1b46328a095777b6ccb",
     "packages": [
         {
             "package": "evenement/evenement",
@@ -8,7 +8,12 @@
             "commit-date": "1338390068"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+        {
+            "package": "esperance/esperance-phpunit",
+            "version": "v0.1.0"
+        }
+    ],
     "aliases": [
 
     ],

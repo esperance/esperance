@@ -3,7 +3,7 @@ namespace Esperance\Tests;
 
 use \Esperance\Assertion;
 
-class AssertionTest extends \PHPUnit_Framework_TestCase
+class AssertionTest extends \Esperance\PHPUnit\TestCase
 {
     /**
      * @test
@@ -446,11 +446,5 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
         })->to->throw('Esperance\Error');
 
         $this->expect($emittedEvents)->to->be(array('before_assertion', 'assertion_failure'));
-    }
-
-    public function expect($subject)
-    {
-        $assertion = new Assertion($subject);
-        return $assertion;
     }
 }
