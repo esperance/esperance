@@ -1,7 +1,12 @@
 {
-    "hash": "93acbc2ac457db24001d1ff4885ae4b9",
+    "hash": "a87ba7dff2f1c61ba0e4a6169864539e",
     "packages": [
-
+        {
+            "package": "evenement/evenement",
+            "version": "1.0.x-dev",
+            "source-reference": "v1.0.0",
+            "commit-date": "1338390068"
+        }
     ],
     "packages-dev": null,
     "aliases": [
