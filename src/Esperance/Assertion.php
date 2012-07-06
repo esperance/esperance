@@ -44,7 +44,7 @@ class Assertion
     public function __get($key)
     {
         if ($key === 'and') {
-            return $this->createNewAssertion($this->subject);
+            return new Assertion($this->subject, $this->emitter);
         } else {
             $this->flags[$key] = true;
             return $this;
@@ -80,16 +80,6 @@ class Assertion
     public function getFlags()
     {
         return $this->flags;
-    }
-
-    public function onBeforeInitialize($fn)
-    {
-        $this->emitter->on('before_initialize', $fn);
-    }
-
-    public function onAfterInitialize($fn)
-    {
-        $this->emitter->on('after_initialize', $fn);
     }
 
     public function onBeforeAssertion($fn)
@@ -270,14 +260,6 @@ class Assertion
     private function i($obj)
     {
         return var_export($obj, true);
-    }
-
-    protected function createNewAssertion($subject)
-    {
-        $this->emitter->emit('before_initialize', array($this));
-        $newAssertion = new static($subject, $this->emitter);
-        $this->emitter->emit('after_initialize', array($this, $newAssertion));
-        return $newAssertion;
     }
 
     protected function throwAssertionError($message)
