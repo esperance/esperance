@@ -392,8 +392,65 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
         })->to->throw('Esperance\Error');
     }
 
+    /**
+     * @test
+     */
+    public function events_should_be_emitted_around_assertion()
+    {
+        $emittedEvents = array();
+        $assertion = new Assertion(NULL);
+        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_assertion';
+        });
+        $assertion->onAfterAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'after_assertion';
+        });
+        $assertion->to->be(NULL);
+
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'after_assertion'));
+    }
+
+    /**
+     * @test
+     */
+    public function emitter_should_be_extended()
+    {
+        $emittedEvents = array();
+        $assertion = new Assertion(0);
+        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_assertion';
+        });
+        $assertion->to->be(0)->and->not->to->be(1);
+
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'before_assertion'));
+    }
+
+    /**
+     * @test
+     */
+    public function before_throw_error_event_should_be_emitted_if_assertion_error_thrown()
+    {
+        $emittedEvents = array();
+        $assertion = new Assertion(1);
+        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_assertion';
+        });
+        $assertion->onAfterAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'after_assertion'; // should not be dispatched
+        });
+        $assertion->onBeforeThrowError(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_throw_error';
+        });
+        $this->expect(function () use ($assertion) {
+            $assertion->to->be(0);
+        })->to->throw('Esperance\Error');
+
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'before_throw_error'));
+    }
+
     public function expect($subject)
     {
-        return new Assertion($subject);
+        $assertion = new Assertion($subject);
+        return $assertion;
     }
 }
