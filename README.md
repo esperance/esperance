@@ -74,10 +74,10 @@ Assertion counter example.
 <?php
 require './vendor/autoload.php';
 
-$count = $success = $failure = 0;
+$count = 0;
 
 function expect($subject) {
-    global $count, $success, $failure;
+    global $count;
 
     $extension = new \Esperance\Extension;
     $extension->beforeAssertion(function () use (&$count) {
