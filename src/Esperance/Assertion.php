@@ -8,6 +8,8 @@
  */
 namespace Esperance;
 
+use \Esperance\Extension;
+
 class Assertion
 {
     /**
@@ -18,6 +20,8 @@ class Assertion
     private $subject;
 
     private $flags;
+
+    private $extension;
 
     private $aliases = array(
         'equal'       => 'be',
@@ -30,16 +34,17 @@ class Assertion
         'lessThan'    => 'below',
     );
 
-    public function __construct($subject, $flag = NULL)
+    public function __construct($subject, $extension = NULL)
     {
         $this->subject = $subject;
         $this->flags = array();
+        $this->extension = $extension ? $extension : new Extension;
     }
 
     public function __get($key)
     {
         if ($key === 'and') {
-            return $this->expect($this->subject);
+            return new Assertion($this->subject, $this->extension);
         } else {
             $this->flags[$key] = true;
             return $this;
@@ -57,12 +62,39 @@ class Assertion
 
     public function assert($truth, $message, $error)
     {
+        $this->extension->emitBeforeAssertion();
         $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
         $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
 
         if (!$ok) {
-            throw new Error($message);
+            $this->throwAssertionError($message);
         }
+        $this->extension->emitAssertionSuccess();
+    }
+
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    public function getFlags()
+    {
+        return $this->flags;
+    }
+
+    public function beforeAssertion($callback)
+    {
+        $this->extension->beforeAssertion($callback);
+    }
+
+    public function onAssertionSuccess($callback)
+    {
+        $this->extension->onAssertionSuccess($callback);
+    }
+
+    public function onAssertionFailure($callback)
+    {
+        $this->extension->onAssertionFailure($callback);
     }
 
     public function be($obj)
@@ -124,7 +156,7 @@ class Assertion
             );
         }
         if ($thrown && $expectedMessage && $message !== $expectedMessage) {
-            throw new Error("expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}");
+            $this->throwAssertionError("expected exception message {$this->i($message)} to be {$this->i($expectedMessage)}");
         }
     }
 
@@ -225,13 +257,15 @@ class Assertion
         return $this;
     }
 
-    private function expect($subject)
-    {
-        return new static($subject);
-    }
-
     private function i($obj)
     {
         return var_export($obj, true);
+    }
+
+    protected function throwAssertionError($message)
+    {
+        $error = new Error($message);
+        $this->extension->emitAssertionFailure(array($error));
+        throw $error;
     }
 }
