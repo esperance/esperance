@@ -8,7 +8,7 @@
  */
 namespace Esperance;
 
-use \Evenement\EventEmitter;
+use \Esperance\Extension;
 
 class Assertion
 {
@@ -21,7 +21,7 @@ class Assertion
 
     private $flags;
 
-    private $emitter;
+    private $extension;
 
     private $aliases = array(
         'equal'       => 'be',
@@ -34,17 +34,17 @@ class Assertion
         'lessThan'    => 'below',
     );
 
-    public function __construct($subject, $emitter = NULL)
+    public function __construct($subject, $extension = NULL)
     {
         $this->subject = $subject;
         $this->flags = array();
-        $this->emitter = $emitter ? $emitter : new EventEmitter;
+        $this->extension = $extension ? $extension : new Extension;
     }
 
     public function __get($key)
     {
         if ($key === 'and') {
-            return new Assertion($this->subject, $this->emitter);
+            return new Assertion($this->subject, $this->extension);
         } else {
             $this->flags[$key] = true;
             return $this;
@@ -62,14 +62,14 @@ class Assertion
 
     public function assert($truth, $message, $error)
     {
-        $this->emitter->emit('before_assertion');
+        $this->extension->emitBeforeAssertion();
         $message = isset($this->flags['not']) && $this->flags['not'] ? $error : $message;
         $ok = isset($this->flags['not']) && $this->flags['not'] ? !$truth : $truth;
 
         if (!$ok) {
             $this->throwAssertionError($message);
         }
-        $this->emitter->emit('assertion_success');
+        $this->extension->emitAssertionSuccess();
     }
 
     public function getSubject()
@@ -82,19 +82,19 @@ class Assertion
         return $this->flags;
     }
 
-    public function beforeAssertion($fn)
+    public function beforeAssertion($callback)
     {
-        $this->emitter->on('before_assertion', $fn);
+        $this->extension->beforeAssertion($callback);
     }
 
-    public function onAssertionSuccess($fn)
+    public function onAssertionSuccess($callback)
     {
-        $this->emitter->on('assertion_success', $fn);
+        $this->extension->onAssertionSuccess($callback);
     }
 
-    public function onAssertionFailure($fn)
+    public function onAssertionFailure($callback)
     {
-        $this->emitter->on('assertion_failure', $fn);
+        $this->extension->onAssertionFailure($callback);
     }
 
     public function be($obj)
@@ -265,7 +265,7 @@ class Assertion
     protected function throwAssertionError($message)
     {
         $error = new Error($message);
-        $this->emitter->emit('assertion_failure', array($error));
+        $this->extension->emitAssertionFailure(array($error));
         throw $error;
     }
 }
