@@ -34,11 +34,11 @@ class Assertion
         'lessThan'    => 'below',
     );
 
-    public function __construct($subject, $flag = NULL)
+    public function __construct($subject, $emitter = NULL)
     {
         $this->subject = $subject;
         $this->flags = array();
-        $this->emitter = new EventEmitter;
+        $this->emitter = $emitter ? $emitter : new EventEmitter;
     }
 
     public function __get($key)
@@ -275,7 +275,7 @@ class Assertion
     protected function createNewAssertion($subject)
     {
         $this->emitter->emit('before_initialize', array($this));
-        $newAssertion = new static($subject);
+        $newAssertion = new static($subject, $this->emitter);
         $this->emitter->emit('after_initialize', array($this, $newAssertion));
         return $newAssertion;
     }
