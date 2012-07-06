@@ -399,15 +399,15 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
     {
         $emittedEvents = array();
         $assertion = new Assertion(NULL);
-        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+        $assertion->beforeAssertion(function () use (&$emittedEvents) {
             $emittedEvents[] = 'before_assertion';
         });
-        $assertion->onAfterAssertion(function () use (&$emittedEvents) {
-            $emittedEvents[] = 'after_assertion';
+        $assertion->onAssertionSuccess(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'assertion_success';
         });
         $assertion->to->be(NULL);
 
-        $this->expect($emittedEvents)->to->be(array('before_assertion', 'after_assertion'));
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'assertion_success'));
     }
 
     /**
@@ -417,7 +417,7 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
     {
         $emittedEvents = array();
         $assertion = new Assertion(0);
-        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+        $assertion->beforeAssertion(function () use (&$emittedEvents) {
             $emittedEvents[] = 'before_assertion';
         });
         $assertion->to->be(0)->and->not->to->be(1);
@@ -432,20 +432,20 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
     {
         $emittedEvents = array();
         $assertion = new Assertion(1);
-        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+        $assertion->beforeAssertion(function () use (&$emittedEvents) {
             $emittedEvents[] = 'before_assertion';
         });
-        $assertion->onAfterAssertion(function () use (&$emittedEvents) {
-            $emittedEvents[] = 'after_assertion'; // should not be dispatched
+        $assertion->onAssertionSuccess(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'assertion_success'; // should not be emitted
         });
-        $assertion->onBeforeThrowError(function () use (&$emittedEvents) {
-            $emittedEvents[] = 'before_throw_error';
+        $assertion->onAssertionFailure(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'assertion_failure';
         });
         $this->expect(function () use ($assertion) {
             $assertion->to->be(0);
         })->to->throw('Esperance\Error');
 
-        $this->expect($emittedEvents)->to->be(array('before_assertion', 'before_throw_error'));
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'assertion_failure'));
     }
 
     public function expect($subject)

@@ -69,7 +69,7 @@ class Assertion
         if (!$ok) {
             $this->throwAssertionError($message);
         }
-        $this->emitter->emit('after_assertion');
+        $this->emitter->emit('assertion_success');
     }
 
     public function getSubject()
@@ -82,19 +82,19 @@ class Assertion
         return $this->flags;
     }
 
-    public function onBeforeAssertion($fn)
+    public function beforeAssertion($fn)
     {
         $this->emitter->on('before_assertion', $fn);
     }
 
-    public function onAfterAssertion($fn)
+    public function onAssertionSuccess($fn)
     {
-        $this->emitter->on('after_assertion', $fn);
+        $this->emitter->on('assertion_success', $fn);
     }
 
-    public function onBeforeThrowError($fn)
+    public function onAssertionFailure($fn)
     {
-        $this->emitter->on('before_throw_error', $fn);
+        $this->emitter->on('assertion_failure', $fn);
     }
 
     public function be($obj)
@@ -265,7 +265,7 @@ class Assertion
     protected function throwAssertionError($message)
     {
         $error = new Error($message);
-        $this->emitter->emit('before_throw_error', array($error));
+        $this->emitter->emit('assertion_failure', array($error));
         throw $error;
     }
 }
