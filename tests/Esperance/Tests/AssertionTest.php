@@ -425,6 +425,29 @@ class AssertionTest extends \PHPUnit_Framework_TestCase
         $this->expect($emittedEvents)->to->be(array('before_assertion', 'before_assertion'));
     }
 
+    /**
+     * @test
+     */
+    public function before_throw_error_event_should_be_emitted_if_assertion_error_thrown()
+    {
+        $emittedEvents = array();
+        $assertion = new Assertion(1);
+        $assertion->onBeforeAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_assertion';
+        });
+        $assertion->onAfterAssertion(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'after_assertion'; // should not be dispatched
+        });
+        $assertion->onBeforeThrowError(function () use (&$emittedEvents) {
+            $emittedEvents[] = 'before_throw_error';
+        });
+        $this->expect(function () use ($assertion) {
+            $assertion->to->be(0);
+        })->to->throw('Esperance\Error');
+
+        $this->expect($emittedEvents)->to->be(array('before_assertion', 'before_throw_error'));
+    }
+
     public function expect($subject)
     {
         $assertion = new Assertion($subject);
