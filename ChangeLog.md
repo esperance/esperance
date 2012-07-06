@@ -1,6 +1,11 @@
 ChangeLog of Esp&eacute;rance
 =============================
 
+0.1.0 released 2012-07-07
+-------------------------
+
+- Added `\Esperance\Extension`.
+
 0.0.3 released 2012-07-02
 -------------------------
 
